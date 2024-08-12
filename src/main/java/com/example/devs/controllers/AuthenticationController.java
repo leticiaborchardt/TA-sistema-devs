@@ -3,7 +3,9 @@ package com.example.devs.controllers;
 import com.example.devs.dtos.AuthenticationDTO;
 import com.example.devs.dtos.RegisterDTO;
 import com.example.devs.infra.security.TokenService;
+import com.example.devs.models.Mutant;
 import com.example.devs.models.User;
+import com.example.devs.repositories.MutantRepository;
 import com.example.devs.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class AuthenticationController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    MutantRepository mutantRepository;
 
     @Autowired
     TokenService tokenService;
@@ -50,7 +55,7 @@ public class AuthenticationController {
 
         this.userRepository.save(newUser);
 
-        // TODO: create mutant
+        this.mutantRepository.save(new Mutant(data.mutantName(), data.mutantPower(), data.mutantAge(), newUser));
 
         return ResponseEntity.ok().build();
     }

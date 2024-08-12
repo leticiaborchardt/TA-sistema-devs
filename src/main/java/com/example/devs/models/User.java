@@ -1,5 +1,6 @@
 package com.example.devs.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,10 @@ public class User implements Serializable, UserDetails {
     private String login;
     private String password;
     private UserRole role;
+
+    @OneToOne
+    @JsonBackReference
+    private Mutant mutant;
 
     public User(String login, String password, UserRole role) {
         this.login = login;
