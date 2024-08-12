@@ -4,7 +4,9 @@ import com.example.devs.dtos.MutantDTO;
 import com.example.devs.dtos.RecruitmentResponseDTO;
 import com.example.devs.models.DefeatedEnemiesLog;
 import com.example.devs.models.Mutant;
+import com.example.devs.models.SchoolEntryLog;
 import com.example.devs.repositories.MutantRepository;
+import com.example.devs.repositories.SchoolEntryLogRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +25,23 @@ public class MutantController {
     @Autowired
     MutantRepository mutantRepository;
 
+    @Autowired
+    SchoolEntryLogRepository schoolEntryLogRepository;
+
     @GetMapping
     public ResponseEntity<List<Mutant>> getAllMutants() {
         return ResponseEntity.status(HttpStatus.OK).body(mutantRepository.findAll());
+    }
+
+    @GetMapping("/inside-school")
+    public ResponseEntity<List<Mutant>> getAllMutantsInSchool() {
+        List<SchoolEntryLog> logs = schoolEntryLogRepository.findAllByExitDateIsNull();
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                logs.stream()
+                        .map(SchoolEntryLog::getMutant)
+                        .toList()
+        );
     }
 
     @GetMapping("/{id}")
@@ -73,7 +89,7 @@ public class MutantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateMutant(@PathVariable(value = "id") Long id, @RequestBody @Valid MutantDTO mutantDTO) {
+    public ResponseEntity<Object> updateMutant(@PathVariable Long id, @RequestBody @Valid MutantDTO mutantDTO) {
         Optional<Mutant> mutantO = mutantRepository.findById(id);
 
         if (mutantO.isPresent()) {
@@ -87,7 +103,7 @@ public class MutantController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteMutantById(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<String> deleteMutantById(@PathVariable Long id) {
         Optional<Mutant> mutantO = mutantRepository.findById(id);
 
         if (mutantO.isPresent()) {

@@ -30,4 +30,10 @@ public class SchoolEntryLog implements Serializable {
     private LocalDate entryDate;
 
     private LocalDate exitDate;
+
+    public SchoolEntryLog(Mutant mutant, LocalDate now) {
+        this.mutant = mutant;
+        this.entryDate = now;
+        this.exitDate = null;
+    }
 }
